@@ -74,3 +74,94 @@
 *   安装 [VSCode](https://code.visualstudio.com/)。
 *   安装插件 **PlatformIO IDE**。
 
+### 2. 克隆代码
+```bash
+git clone  https://github.com/qicecrem/Smart-Audio-Hub.git
+````
+
+### 3. 配置 API Key
+
+打开 src/task_audio.cpp，找到以下宏定义，填入您的阿里云百炼 API Key：
+
+codeC++
+
+```
+#define DASHSCOPE_API_KEY "sk-xxxxxxxxxxxxxxxxxxxxxxxx"
+```
+
+> 申请地址：[阿里云百炼控制台](https://www.google.com/url?sa=E&q=https%3A%2F%2Fbailian.console.aliyun.com%2F)
+
+### 4. 编译与烧录
+
+1. 连接 ESP32-S3 开发板。
+    
+2. 点击 PlatformIO 侧边栏的 **Upload** 按钮。
+    
+3. 烧录成功后，打开串口监视器 (波特率 115200) 查看日志。
+    
+
+---
+
+## 📂 项目结构
+
+codeText
+
+```
+.
+├── include/
+│   ├── config.h        // 全局引脚定义、状态变量声明
+│   └── tasks.h         // FreeRTOS 任务函数声明
+├── src/
+│   ├── main.cpp        // 程序入口、核心状态机、按键回调
+│   ├── task_audio.cpp  // ★核心：音频DSP算法、网络流媒体、AI交互逻辑
+│   ├── task_net.cpp    // Wi-Fi 守护、NTP 时间同步
+│   └── task_ui.cpp     // WS2812 灯光特效控制
+└── platformio.ini      // 编译配置、依赖库管理
+```
+
+---
+
+## 🧩 依赖库 (自动安装)
+
+- **ESP8266Audio**：强大的音频解码库 (MP3/AAC/WAV)。
+    
+- **ArduinoJson**：高效处理 AI 返回的 JSON 数据。
+    
+- **FastLED**：控制 WS2812 灯珠。
+    
+- **OneButton**：处理单击、双击、长按事件。
+    
+- **WiFiManager**：实现配网门户功能。
+    
+
+---
+
+## ⚠️ 常见问题 (FAQ)
+
+**Q1: 为什么 AI 回答总是“网络连接失败”？**
+
+- 检查 src/task_audio.cpp 中的 DASHSCOPE_API_KEY 是否正确。
+    
+- 确保 Wi-Fi 信号良好（AI 交互需要较高带宽上传录音）。
+    
+
+**Q2: 喇叭有杂音或破音？**
+
+- 检查电源是否稳定（建议使用独立 5V 供电，不要只靠 USB）。
+    
+- 在 task_audio.cpp 中适当降低 SetGain(0.1f) 的数值。
+    
+
+**Q3: 编译报错 PSRAM not found？**
+
+- 请确保在 platformio.ini 中开启了 PSRAM 支持：
+    
+    codeIni
+    
+    ```
+    board_build.psram = enabled
+    ```
+    
+
+---
+
